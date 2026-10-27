@@ -9,6 +9,7 @@ services:
     restart: always
     environment:
       RESOURCES_DB_URL: resources-db
+      RESOURCES_DB_PORT: 5432
     depends_on:
       - resources-db
       - songs-ms
