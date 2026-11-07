@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resources-ms-deployment
+  namespace: k8s-program
+  labels:
+    app: resources-ms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: resources-ms
+  template:
+    metadata:
+      labels:
+        app: resources-ms
+    spec:
+      containers:
+      - name: resources-ms
+        image: resources-image:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: RESOURCES_DB_URL
+            value: resources-db
+          - name: RESOURCES_DB_PORT
+            value: '5432'

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: songs-ms-deployment
+  namespace: k8s-program
+  labels:
+    app: songs-ms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: songs-ms
+  template:
+    metadata:
+      labels:
+        app: songs-ms
+    spec:
+      containers:
+      - name: songs-ms
+        image: songs-image:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SONGS_DB_URL
+            value: songs-db
+
