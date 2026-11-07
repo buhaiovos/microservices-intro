@@ -15,6 +15,10 @@ spec:
       labels:
         app: songs-ms
     spec:
+      volumes:
+        - name: songs-pv-storage
+          persistentVolumeClaim:
+            claimName: songs-pvc
       containers:
       - name: songs-ms
         image: songs-image:latest
@@ -23,5 +27,8 @@ spec:
         - containerPort: 8080
         env:
           - name: SONGS_DB_URL
-            value: songs-db
+            value: songs-postgres-svc.k8s-program.svc.cluster.local
+        volumeMounts:
+          - mountPath: /usr/share/songs
+            name: songs-pv-storage
 

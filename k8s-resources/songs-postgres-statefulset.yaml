@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: songs-postgres
+  namespace: k8s-program
+spec:
+  selector:
+    matchLabels:
+      app: songs-postgres
+  serviceName: songs-postgres-svc
+  #songs-postgres-svc.k8s-program.svc.cluster.local
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: songs-postgres
+    spec:
+      containers:
+        - name: songs-postgres
+          image: postgres:18.6
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_HOST
+              value: 127.0.0.0
+            - name: POSTGRES_PORT
+              value: '5432'
+          ports:
+            - containerPort: 5432
+              name: pg
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: pg-volume
+  volumeClaimTemplates:
+    - metadata:
+        name: pg-volume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: hostpath
+        resources:
+          requests:
+            storage: 1Gi
+
+
