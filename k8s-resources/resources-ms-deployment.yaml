@@ -23,6 +23,6 @@ spec:
         - containerPort: 8080
         env:
           - name: RESOURCES_DB_URL
-            value: resources-db
+            value: resources-postgres-svc.k8s-program.svc.cluster.local
           - name: RESOURCES_DB_PORT
             value: '5432'

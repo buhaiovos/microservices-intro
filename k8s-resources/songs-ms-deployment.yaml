@@ -24,7 +24,7 @@ spec:
         image: songs-image:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
         env:
           - name: SONGS_DB_URL
             value: songs-postgres-svc.k8s-program.svc.cluster.local
