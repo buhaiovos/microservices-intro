@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: resources-ms-deployment
-  namespace: k8s-program
+  namespace: k8s-program-buhaiovos
   labels:
     app: resources-ms
 spec:
@@ -23,12 +23,12 @@ spec:
             - containerPort: 8080
           env:
             - name: RESOURCES_DB_URL
-              value: resources-postgres-svc.k8s-program.svc.cluster.local
+              value: resources-postgres-svc.k8s-program-buhaiovos.svc.cluster.local
             - name: RESOURCES_DB_PORT
               value: '5432'
 
             - name: SONGS_MS_URL
-              value: songs-ms-service.k8s-program.svc.cluster.local
+              value: songs-ms-service.k8s-program-buhaiovos.svc.cluster.local
 
             # config map usage
             - name: RESOURCES_DB_NAME

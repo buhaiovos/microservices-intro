@@ -2,13 +2,13 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: songs-postgres
-  namespace: k8s-program
+  namespace: k8s-program-buhaiovos
 spec:
   selector:
     matchLabels:
       app: songs-postgres
   serviceName: songs-postgres-svc
-  #songs-postgres-svc.k8s-program.svc.cluster.local
+  #songs-postgres-svc.k8s-program-buhaiovos.svc.cluster.local
   minReadySeconds: 5
   template:
     metadata:

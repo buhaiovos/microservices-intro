@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: resources-config-map
-  namespace: k8s-program
+  namespace: k8s-program-buhaiovos
 data:
   database_name: "resources_db"
   resources_db_init.sql: |
