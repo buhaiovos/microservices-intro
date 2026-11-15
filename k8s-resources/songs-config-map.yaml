@@ -5,7 +5,5 @@ metadata:
   namespace: k8s-program
 data:
   database_name: "songs_db"
-  init_sql: "songs_db_init.sql"
   songs_db_init.sql: |
-    SELECT 'CREATE DATABASE songs_db'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'songs_db')\gexec;
+    CREATE DATABASE songs_db;

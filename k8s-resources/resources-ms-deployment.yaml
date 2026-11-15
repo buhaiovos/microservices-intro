@@ -16,13 +16,35 @@ spec:
         app: resources-ms
     spec:
       containers:
-      - name: resources-ms
-        image: resources-image:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
-        env:
-          - name: RESOURCES_DB_URL
-            value: resources-postgres-svc.k8s-program.svc.cluster.local
-          - name: RESOURCES_DB_PORT
-            value: '5432'
+        - name: resources-ms
+          image: resources-image:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: RESOURCES_DB_URL
+              value: resources-postgres-svc.k8s-program.svc.cluster.local
+            - name: RESOURCES_DB_PORT
+              value: '5432'
+
+            - name: SONGS_MS_URL
+              value: songs-ms-service.k8s-program.svc.cluster.local
+
+            # config map usage
+            - name: RESOURCES_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: resources-config-map
+                  key: database_name
+
+            # secret usage
+            - name: RESOURCES_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: resources-db-secret
+                  key: username
+            - name: RESOURCES_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: resources-db-secret
+                  key: password

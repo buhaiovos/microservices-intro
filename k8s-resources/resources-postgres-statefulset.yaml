@@ -20,21 +20,34 @@ spec:
           image: postgres:18.6
           env:
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: resources-db-secret
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: postgres
-            - name: POSTGRES_DB
-              value: postgres
-            - name: POSTGRES_HOST
-              value: 127.0.0.0
-            - name: POSTGRES_PORT
-              value: '5432'
+              valueFrom:
+                secretKeyRef:
+                  name: resources-db-secret
+                  key: password
+
           ports:
             - containerPort: 5432
               name: pg
           volumeMounts:
             - mountPath: /var/lib/postgresql
               name: pg-volume
+            - mountPath: /docker-entrypoint-initdb.d
+              name: pg-init
+              readOnly: true
+
+      volumes:
+        - name: pg-init
+          configMap:
+            name: resources-config-map
+            items:
+              - key: resources_db_init.sql
+                path: init.sql
+
   volumeClaimTemplates:
     - metadata:
         name: pg-volume
@@ -45,5 +58,4 @@ spec:
         resources:
           requests:
             storage: 1Gi
-
 

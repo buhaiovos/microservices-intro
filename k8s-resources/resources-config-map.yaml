@@ -5,7 +5,5 @@ metadata:
   namespace: k8s-program
 data:
   database_name: "resources_db"
-  init_sql: "resources_db_init.sql"
   resources_db_init.sql: |
-    SELECT 'CREATE DATABASE resources_db'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'resources_db')\gexec;
+    CREATE DATABASE resources_db;
