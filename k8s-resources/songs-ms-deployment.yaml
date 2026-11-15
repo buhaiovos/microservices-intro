@@ -25,6 +25,26 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
+          restartPolicy: Always
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            failureThreshold: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            periodSeconds: 5
+            failureThreshold: 3
           env:
             - name: SONGS_DB_URL
               value: songs-postgres-svc.k8s-program-buhaiovos.svc.cluster.local
