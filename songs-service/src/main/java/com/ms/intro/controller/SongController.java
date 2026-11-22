@@ -11,12 +11,12 @@ import com.ms.intro.mapper.SongDtoToDomainMapper;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,12 +27,22 @@ public class SongController {
 
     private final SongRepo songRepo;
 
+    @GetMapping
+    @Transactional(readOnly = true)
+    public Collection<SongDto> getSongMetadataByGenre(@RequestParam("genre") String genre) {
+        try (final var stream = songRepo.findAllByGenre(genre)) {
+            return stream
+                .map(SongDtoToDomainMapper.INSTANCE::toDto)
+                .toList();
+        }
+    }
+
     @GetMapping(path = "/{id}", produces = "application/json")
     @ResponseBody
     public SongDto getSongMetadataByResourceId(@PathVariable("id") int id) {
         SongData song = songRepo.findByResourceId(id)
-                .orElseThrow(() -> new NotFoundSongDataException("File info on id '" + id + "' does not exist!"));
-        return SongDtoToDomainMapper.INSTANCE.songToCarDto(song);
+            .orElseThrow(() -> new NotFoundSongDataException("File info on id '" + id + "' does not exist!"));
+        return SongDtoToDomainMapper.INSTANCE.toDto(song);
     }
 
     @PostMapping(consumes = "application/json")
@@ -40,10 +50,10 @@ public class SongController {
     @ResponseBody
     public IdDto saveSongMetadata(@Validated @RequestBody SongDto song) {
         songRepo.findByResourceId(song.getResourceId().intValue())
-                .ifPresent(el -> {
-                    throw new DuplicatedResourceIdException("Duplicated \"resourceId\": " + song.getResourceId().intValue());
-                });
-        SongData savedMeta = SongDtoToDomainMapper.INSTANCE.songToCarDto(song);
+            .ifPresent(el -> {
+                throw new DuplicatedResourceIdException("Duplicated \"resourceId\": " + song.getResourceId().intValue());
+            });
+        SongData savedMeta = SongDtoToDomainMapper.INSTANCE.toData(song);
         savedMeta = songRepo.save(savedMeta);
         return new IdDto(savedMeta.getId());
     }
@@ -53,16 +63,16 @@ public class SongController {
     @ResponseBody
     public String deleteSongMetadata(@RequestParam("ids") @Size(min = 1, max = 200) String ids) {
         return Stream.of(ids.split(","))
-                .map(String::strip)
-                .filter(this::validateIds)
-                .mapToInt(Integer::parseInt)
-                .filter(i -> songRepo.findById(i).isPresent())
-                .map(i -> {
-                    songRepo.deleteById(Integer.valueOf(i));
-                    return i;
-                })
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining(",", "{ \"ids\":[ ", " ] }"));
+            .map(String::strip)
+            .filter(this::validateIds)
+            .mapToInt(Integer::parseInt)
+            .filter(i -> songRepo.findById(i).isPresent())
+            .map(i -> {
+                songRepo.deleteById(Integer.valueOf(i));
+                return i;
+            })
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining(",", "{ \"ids\":[ ", " ] }"));
     }
 
     @DeleteMapping("/by-resource-id")
@@ -71,20 +81,20 @@ public class SongController {
     @Transactional
     public String deleteSongMetadataByResourceIds(@RequestParam("ids") @Size(min = 1, max = 200) String ids) {
         return Stream.of(ids.split(","))
-                .map(String::strip)
-                .filter(this::validateIds)
-                .mapToInt(Integer::parseInt)
-                .filter(i -> songRepo.findByResourceId(i).isPresent())
-                .map(i -> {
-                    songRepo.deleteByResourceId(Integer.valueOf(i));
-                    return i;
-                })
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining(",", "{ \"ids\":[ ", " ] }"));
+            .map(String::strip)
+            .filter(this::validateIds)
+            .mapToInt(Integer::parseInt)
+            .filter(i -> songRepo.findByResourceId(i).isPresent())
+            .map(i -> {
+                songRepo.deleteByResourceId(Integer.valueOf(i));
+                return i;
+            })
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining(",", "{ \"ids\":[ ", " ] }"));
     }
 
     private boolean validateIds(String id) {
-        if(StringUtils.isNumeric(id)) {
+        if (StringUtils.isNumeric(id)) {
             return true;
         }
         throw new InvalidIdsForDeletionException(String.format("Invalid Ids parameter: %s!", id));

@@ -1,13 +1,14 @@
 package com.ms.intro.domain;
 
-import com.ms.intro.dto.SongDto;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.Objects;
 
 @Entity
 @Table(name = "songs")
@@ -21,21 +22,24 @@ public class SongData {
     @GeneratedValue
     int id;
 
-    @Column(nullable = true)
+    @Column
     String name;
 
-    @Column(nullable = true)
+    @Column
     String artist;
 
-    @Column(nullable = true)
+    @Column
     String album;
 
-    @Column(nullable = true)
+    @Column
+    String genre;
+
+    @Column
     String length;
 
     @Column(unique = true, nullable = false)
     Integer resourceId;
 
-    @Column(nullable = true)
+    @Column
     String year;
 }

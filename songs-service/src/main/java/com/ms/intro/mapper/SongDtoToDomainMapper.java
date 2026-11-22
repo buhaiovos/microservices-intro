@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface SongDtoToDomainMapper {
     SongDtoToDomainMapper INSTANCE = Mappers.getMapper( SongDtoToDomainMapper.class );
-    SongData songToCarDto(SongDto dto);
-    SongDto songToCarDto(SongData dto);
-
+    SongData toData(SongDto dto);
+    SongDto toDto(SongData dto);
 }

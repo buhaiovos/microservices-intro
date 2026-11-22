@@ -20,6 +20,8 @@ public class SongDto {
 
     String album;
 
+    String genre;
+
     String length;
 
     @NotNull
