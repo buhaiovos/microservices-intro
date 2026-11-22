@@ -7,9 +7,17 @@ metadata:
     app: resources-ms
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: resources-ms
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+
   template:
     metadata:
       labels:
@@ -17,7 +25,7 @@ spec:
     spec:
       containers:
         - name: resources-ms
-          image: resources-image:0.1
+          image: resources-image:0.2
           imagePullPolicy: IfNotPresent
           restartPolicy: Always
           ports:

@@ -7,9 +7,17 @@ metadata:
     app: songs-ms
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: songs-ms
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+
   template:
     metadata:
       labels:
@@ -21,7 +29,7 @@ spec:
             claimName: songs-pvc
       containers:
         - name: songs-ms
-          image: songs-image:0.1
+          image: songs-image:0.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
